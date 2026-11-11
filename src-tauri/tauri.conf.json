@@ -1,0 +1,40 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "日历便签",
+  "version": "0.1.0",
+  "identifier": "com.calendarmemo.app",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://127.0.0.1:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "日历便签",
+        "width": 1280,
+        "height": 800,
+        "minWidth": 920,
+        "minHeight": 680,
+        "center": true,
+        "resizable": true,
+        "maximized": false
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; connect-src ipc: http://ipc.localhost; style-src 'self' 'unsafe-inline'; img-src 'self' asset: http://asset.localhost data:"
+    }
+  },
+  "plugins": {
+    "sql": {
+      "preload": ["sqlite:calendar-memo.db"]
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "shortDescription": "轻量、离线的日历备忘录",
+    "longDescription": "通过月历快速查看并记录每天事项的 Windows 本地应用。"
+  }
+}

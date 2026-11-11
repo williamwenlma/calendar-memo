@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>日历便签 · Design Taste 原型</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#e9e8e4;color:#242420;font:14px/1.5 "Segoe UI","Microsoft YaHei UI",sans-serif}
+button{font:inherit;color:inherit;cursor:pointer}button:focus-visible{outline:2px solid #355aac;outline-offset:3px}
+h1,h2,p{margin:0}ul{list-style:none;margin:0;padding:0}
+.review{max-width:1600px;margin:auto;padding:18px 24px 28px}
+.review-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+.review-title{font-weight:700;font-size:15px}.review-title small{margin-left:10px;color:#575751;font-size:12px;font-weight:500}
+.switcher{display:flex;gap:4px;flex-wrap:wrap}.switcher button{min-height:38px;padding:7px 12px;background:transparent;border:1px solid #c7c6c0;border-radius:4px;font-size:13px}
+.switcher button[aria-pressed=true]{background:#242420;color:white;border-color:#242420}
+.frame{border:1px solid #c9c8c0;background:var(--paper);overflow:hidden}
+.desk{--paper:#f7f4ed;--ink:#272720;--muted:#55564e;--line:#d5d0c5;--accent:#244591;--mark:#e6eaf2;color:var(--ink);background:var(--paper);min-height:745px;min-width:0}
+.mono,time,.num,.rank,.meta{font-family:"Cascadia Mono",Consolas,"Microsoft YaHei UI",monospace;font-variant-numeric:tabular-nums}
+.chrome{min-height:50px;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:0 30px;border-bottom:1px solid var(--line);font-size:13px}
+.brand{font-weight:730;display:flex;align-items:center;gap:9px;white-space:nowrap}.brand svg{width:18px;height:18px}.chrome nav{display:flex;gap:22px;align-self:stretch;align-items:stretch;white-space:nowrap}
+.chrome nav span{display:grid;align-items:center;border-bottom:2px solid transparent;color:var(--muted)}.chrome nav .on{border-color:var(--accent);color:var(--ink);font-weight:700}
+.meta{color:var(--muted);font-size:12px}.action{display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:var(--action-ink,#fff);padding:8px 11px;font-weight:680;font-size:13px;white-space:nowrap}
+.tag{font-size:12px;color:var(--muted);white-space:nowrap}
+.month-work{display:grid;grid-template-columns:minmax(0,1fr) 322px;min-height:695px}
+.month-main{padding:26px 30px 24px;min-width:0}.month-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:15px}
+.month-head h1{font:500 43px/1.02 "SimSun","Songti SC",Georgia,serif;letter-spacing:-.04em}.month-head h1 em{font:normal 54px/.9 Georgia,serif;letter-spacing:-.065em;margin-right:8px}
+.pager{display:flex;gap:5px;align-items:center}.pager span{padding:5px 9px;border:1px solid var(--line);font-size:12px}
+.calendar{border:1px solid var(--line)}.week,.dates{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.week{border-bottom:1px solid var(--line);color:var(--muted)}.week span{padding:7px 8px;font-size:12px}.dates{gap:1px;background:var(--line);grid-auto-rows:70px}
+.day{background:var(--paper);min-width:0;padding:5px 7px}.day.off{background:#efede6;color:#626159}.day.selected{background:var(--mark);outline:1px solid var(--accent);outline-offset:-1px}
+.day .num{font-weight:700;font-size:13px}.day.selected .num{color:var(--accent)}.day small{color:var(--muted);font-size:11px;display:block}
+.day-note{display:flex;gap:5px;min-width:0;margin-top:4px;font-size:12px;align-items:baseline}.day-note time{font-size:11px;color:var(--muted);flex:none}.day-note strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.inspector{background:#ece9df;border-left:1px solid var(--line);padding:27px 23px}
+.inspect-head{border-bottom:1px solid var(--line);padding-bottom:14px}.inspect-head h2{font:500 31px/1.2 "SimSun","Songti SC",Georgia,serif;margin:4px 0 2px}.inspect-list{margin:8px 0 17px}
+.inspect-list li{display:grid;grid-template-columns:53px minmax(0,1fr);gap:6px;padding:10px 0;border-bottom:1px solid var(--line)}
+.inspect-list time{font-size:12px;color:var(--muted);padding-top:2px}.inspect-list strong{font-size:14px;display:block}.inspect-list .tag{display:block;margin-top:2px}
+.form{border-top:2px solid var(--ink);padding-top:12px}.form h2{font-size:14px;margin-bottom:8px}.form .field{display:block;border:1px solid var(--line);padding:9px;background:var(--paper);color:var(--muted);margin-bottom:8px;font-size:12px}
+.form .fields{display:flex;gap:7px;flex-wrap:wrap}.form .action{margin-top:2px}
+.week-desk{--paper:#191e20;--ink:#f0f2ec;--muted:#aebbb3;--line:#414c48;--accent:#cee981;--mark:#323b2b;--action-ink:#22281a}
+.week-main{padding:23px 30px 24px}
+.week-head{display:grid;grid-template-columns:1fr auto;align-items:end;gap:15px;margin-bottom:16px}
+.week-head h1{font-size:36px;font-weight:690;line-height:1.1;letter-spacing:-.06em;margin-top:3px}
+.week-head h1 em{font:400 29px/1.1 "Cascadia Mono",Consolas,monospace;color:var(--muted);margin-left:12px}
+.planner{display:grid;grid-template-columns:64px repeat(7,minmax(0,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.planner>*{border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-width:0}
+.week-day{padding:9px 8px 10px;display:flex;align-items:baseline;gap:7px;color:var(--muted);font-size:12px}.week-day b{font-size:20px;color:var(--ink)}.week-day.today{background:var(--mark);color:var(--accent)}.week-day.today b{color:var(--accent)}
+.timescale{display:grid;align-content:start;padding:10px 7px;color:var(--muted);font-size:11px}
+.slot{min-height:87px;padding:6px}.slot.today{background:#242c25}
+.event{border-left:2px solid #798a7f;background:#2a322f;padding:5px 6px;color:var(--ink);min-width:0}
+.event time{display:block;color:var(--muted);font-size:11px}.event strong{font-size:12px;line-height:1.4;display:block}.event+.event{margin-top:4px}
+.weekly-foot{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:14px}
+.lane-summary{border-top:1px solid var(--line);padding:10px 0}.lane-summary h2{font-size:14px;margin-bottom:4px}.lane-summary p{color:var(--muted);font-size:13px}
+.lane-summary time{margin-right:8px;color:var(--ink)}
+.index-desk{--paper:#fbfaf7;--ink:#292323;--muted:#655a58;--line:#dbd3ce;--accent:#993b32;--mark:#f5e9e4}
+.index-work{display:grid;grid-template-columns:254px minmax(0,1fr);min-height:690px}
+.index-side{background:#f0ebe5;border-right:1px solid var(--line);padding:24px 21px}
+.index-side h1{font:500 34px/1.1 "SimSun","Songti SC",Georgia,serif;margin:8px 0 6px}.index-side .meta{margin-bottom:18px}
+.periods{display:grid;border-top:1px solid var(--line)}.periods>span{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);min-height:38px;padding:5px 8px;font-size:13px}.periods .current{background:var(--mark);font-weight:730;color:var(--accent);border-left:2px solid var(--accent)}
+.axis-note{margin-top:23px;padding-top:13px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}.axis-note p+p{margin-top:5px}
+.index-main{padding:23px 27px}.index-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:7px}.index-head h2{font-size:19px}
+.group{border-top:1px solid var(--line);display:grid;grid-template-columns:166px minmax(0,1fr);gap:13px;padding:8px 0}.group:last-child{border-bottom:1px solid var(--line)}
+.group-head{display:grid;grid-template-columns:30px 1fr;gap:5px;padding:4px 0 2px}.rank{color:var(--muted);font-size:12px}.group-head strong{font-size:14px}.group-head small{display:block;color:var(--muted);font-size:11px;margin-top:2px}.group:nth-of-type(1) .rank{color:var(--accent);font-weight:750}
+.record{display:grid;grid-template-columns:90px minmax(0,1fr) 52px;gap:9px;align-items:center;min-height:28px;padding:3px 6px;background:#f4f0ea}.record:nth-child(even){background:transparent}.record time{color:var(--muted);font-size:11px}.record strong{font-size:13px}.record .record-time{text-align:right}
+.review-note{margin:10px 0 0;color:#53534c;font-size:12px}
+@media(max-width:980px){.month-work{grid-template-columns:minmax(0,1fr) 265px}.month-main,.week-main{padding-inline:18px}.inspector{padding-inline:16px}.chrome{padding-inline:18px}.index-work{grid-template-columns:210px minmax(0,1fr)}.index-main{padding-inline:18px}.group{grid-template-columns:135px 1fr}}
+@media(max-width:700px){.review{padding:12px}.chrome nav{gap:10px}.chrome>.meta{display:none}.month-work,.index-work{grid-template-columns:minmax(0,1fr)}.month-main,.week-main,.index-main{padding:16px 12px}.inspector,.index-side{border-left:0;border-right:0;border-top:1px solid var(--line)}.dates{grid-auto-rows:55px}.day{padding:4px}.day-note time{display:none}.day-note strong{font-size:10px}.day small{font-size:10px}.month-head h1{font-size:27px}.month-head h1 em{font-size:36px}.week-head{grid-template-columns:1fr}.week-head h1{font-size:27px}.week-head h1 em{display:block;font-size:19px;margin:6px 0 0}.planner-shell{overflow-x:auto}.planner{min-width:690px}.weekly-foot{grid-template-columns:1fr}.periods{grid-template-columns:repeat(4,minmax(0,1fr))}.periods span{padding-inline:4px;font-size:12px}.axis-note{margin-top:12px}.group{grid-template-columns:1fr;gap:3px}.group-head{grid-template-columns:24px 1fr}.record{grid-template-columns:70px minmax(0,1fr) 40px;gap:5px}}
+</style>
+</head>
+<body>
+<div class="review">
+  <header class="review-head">
+    <div class="review-title">日历便签 <small>Design Taste · 首屏原型</small></div>
+    <div class="switcher" role="group" aria-label="选择原型">
+      <button type="button" data-view="month" aria-pressed="true">01 案头月历</button>
+      <button type="button" data-view="week" aria-pressed="false">02 周计划台</button>
+      <button type="button" data-view="priority" aria-pressed="false">03 优先级索引</button>
+    </div>
+  </header>
+  <main class="frame" id="preview" aria-label="原型预览"></main>
+  <p class="review-note">使用同一组示例便签。可切换首屏，预览内的新增、编辑和筛选仅展示布局，不连接正式记录。</p>
+</div>
+<script>
+const entries=[
+  [3,'10:00','整理十月报销单',3],[5,'15:40','检查备份是否完整',1],
+  [9,'11:00','确认场地预订',2],[10,'10:30','核对预算明细',0],
+  [11,'09:10','提交项目预算',0],[11,'14:30','梳理下季度计划',1],
+  [11,'17:20','回复工位确认',2],[11,'','整理收藏夹',3],
+  [12,'11:20','阅读合同草稿',1],[13,'16:30','提交采购材料',0],
+  [14,'10:15','预约年度体检',1],[15,'','清理下载目录',3],
+  [18,'16:00','发出项目定稿',0],[20,'12:10','确认快递改派',2],[27,'','归档桌面文件',3]
+];
+const priorities=['重要且紧急','重要不紧急','不重要紧急','不重要不紧急'];
+const weekdays=['一','二','三','四','五','六','日'];
+const today=entries.filter(([day])=>day===11);
+const logo='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4m8-4v4M4 10h16m-11 4h2m3 0h2m-7 3h2"/></svg>';
+const chrome=(active)=>`<header class="chrome"><span class="brand">${logo}日历便签</span><nav aria-label="应用视图"><span class="${active==='calendar'?'on':''}">日历</span><span class="${active==='board'?'on':''}">四象限看板</span></nav><span class="meta">2026 / 11 / 11 · 周三</span></header>`;
+const plus=(label)=>`<span class="action"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M3 8h10" stroke="currentColor" fill="none" stroke-width="1.5"/></svg>${label}</span>`;
+const month=()=>{
+  const dates=Array.from({length:42},(_,i)=>{
+    const date=new Date(2026,10,i-5),day=date.getDate(),current=date.getMonth()===10;
+    const notes=current?entries.filter(([d])=>d===day):[];
+    return `<div class="day ${current?'':'off'} ${current&&day===11?'selected':''}"><span class="num">${day}</span>
+    ${notes.slice(0,1).map(([,time,title])=>`<span class="day-note"><time>${time||'全天'}</time><strong>${title}</strong></span>`).join('')}
+    ${notes.length>1?`<small>另有 ${notes.length-1} 条</small>`:''}</div>`;
+  }).join('');
+  return `<section class="desk month-desk">${chrome('calendar')}<div class="month-work">
+  <section class="month-main"><header class="month-head"><div><p class="meta">2026 年 · 月历</p><h1><em>11</em>月</h1></div><div class="pager" aria-label="月份导航示意"><span>‹</span><span>›</span><span>回到今天</span></div></header>
+  <div class="calendar" aria-label="十一月月历"><div class="week">${weekdays.map(d=>`<span>周${d}</span>`).join('')}</div><div class="dates">${dates}</div></div></section>
+  <aside class="inspector"><header class="inspect-head"><p class="meta">周三 · 当天事项</p><h2>11 月 11 日</h2><p class="meta">${today.length} 条便签</p></header>
+  <ul class="inspect-list">${today.map(([,t,title,p])=>`<li><time>${t||'全天'}</time><div><strong>${title}</strong><span class="tag">${priorities[p]}</span></div></li>`).join('')}</ul>
+  <section class="form"><h2>记一条便签</h2><span class="field">写下要记的事项</span><div class="fields"><span class="field">时间（可选）</span><span class="field">选择优先级 ▾</span></div>${plus('新增便签')}</section></aside></div></section>`;
+};
+const week=()=>{
+  const columns=[9,10,11,12,13,14,15];
+  const row=(label,filter)=>`<div class="timescale mono">${label}</div>`+columns.map(day=>`<div class="slot ${day===11?'today':''}">${entries.filter(e=>e[0]===day&&filter(e[1])).map(([,t,title])=>`<div class="event"><time>${t||'全天'}</time><strong>${title}</strong></div>`).join('')}</div>`).join('');
+  return `<section class="desk week-desk">${chrome('calendar')}<div class="week-main">
+  <header class="week-head"><div><p class="meta">2026 年 11 月 · 本周</p><h1>周计划<em>09–15</em></h1></div>${plus('新增便签')}</header>
+  <div class="planner-shell"><div class="planner" aria-label="十一月九日至十五日的安排">
+  <div class="timescale">时间</div>${columns.map((d,i)=>`<div class="week-day ${d===11?'today':''}"><b class="num">${d}</b>周${weekdays[i]}${d===11?' · 今天':''}</div>`).join('')}
+  ${row('上午',t=>t&&t<'12:00')}${row('下午',t=>t&&t>='12:00'&&t<'17:00')}${row('傍晚',t=>t&&t>='17:00')}${row('无时间',t=>!t)}</div></div>
+  <div class="weekly-foot"><section class="lane-summary"><h2>本周安排</h2><p>${entries.filter(([d])=>d>=9&&d<=15).length} 条便签 · 11 月 9 日至 15 日</p></section><section class="lane-summary"><h2>周三 · 重要事项</h2><p><time>09:10</time>提交项目预算　·　<time>14:30</time>梳理下季度计划</p></section></div>
+  </div></section>`;
+};
+const index=()=>{
+  const descriptions=['尽快处理','安排专注时间','按需回应','有空再处理'];
+  return `<section class="desk index-desk">${chrome('board')}<div class="index-work">
+  <aside class="index-side"><p class="meta">四象限看板</p><h1>优先级索引</h1><p class="meta">2026 / 11</p>
+  <div class="periods" aria-label="日期范围示意"><span>本日</span><span class="current">本月<span aria-hidden="true">›</span></span><span>本季度</span><span>本年</span></div>
+  <div class="axis-note"><p>重要：是否推进关键目标</p><p>紧急：是否需要尽快处理</p></div></aside>
+  <section class="index-main"><header class="index-head"><h2>11 月事项</h2><p class="meta">11.01 — 11.30 · ${entries.length} 条</p></header>
+  ${priorities.map((label,i)=>{const notes=entries.filter(e=>e[3]===i);return `<section class="group"><header class="group-head"><span class="rank">0${i+1}</span><div><strong>${label}</strong><small>${descriptions[i]} · ${notes.length} 条</small></div></header><ul>
+  ${notes.map(([d,t,title])=>`<li class="record"><time>11 月 ${d} 日</time><strong>${title}</strong><time class="record-time">${t||'全天'}</time></li>`).join('')}</ul></section>`;}).join('')}</section></div></section>`;
+};
+const screens={month,week,priority:index};
+const buttons=[...document.querySelectorAll('[data-view]')];
+function show(view){
+  if(!Object.hasOwn(screens,view)) view='month';
+  document.getElementById('preview').innerHTML=screens[view]();
+  for(const button of buttons) button.setAttribute('aria-pressed',String(button.dataset.view===view));
+}
+for(const button of buttons) button.addEventListener('click',()=>show(button.dataset.view));
+show(new URLSearchParams(location.search).get('view')||'month');
+</script>
+</body>
+</html>

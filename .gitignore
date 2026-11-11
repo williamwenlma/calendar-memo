@@ -1,0 +1,15 @@
+node_modules/
+dist/
+dist-standalone/
+src-tauri/target/
+.oil-ui/
+.env
+.env.*
+!.env.example
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+*.log
+.DS_Store
