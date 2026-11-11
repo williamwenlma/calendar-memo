@@ -1,49 +1,46 @@
-# 日历便签
+# Calendar Memo
 
-一款面向 Windows 的轻量、本地、离线日历备忘录，提供月历总览、按日期记录事项和按重要程度与紧急程度分组的四象限看板。
+English · [简体中文](README.zh-CN.md)
 
-## 双击使用
+A lightweight, offline calendar notebook for Windows. Plan the month, keep notes by date and time, and review priorities on an Eisenhower Matrix board.
 
-用资源管理器双击 `CalendarMemo-Standalone.html`。添加或修改事项时选择标签并保存，然后从顶部切换到“四象限看板”。看板支持“本日、本月、本季度、本年”筛选；点击一项可跳回日历编辑。旧事项保留为“未分类”，可补选标签。
+## Demo
 
-日历采用“案头月历”布局：左侧是完整月历，点击月份标题可选择年月；右侧先列出所选日期的便签，再提供录入区。双击日期可直接聚焦录入区。窄屏按月历、当天便签的顺序纵向排列。
+The English screenshots are localized illustrations with sample notes. The downloadable app currently uses Simplified Chinese.
 
-日期筛选以电脑当前本地日期为准，默认“本日”。本季度按自然季度计算（1–3 月、4–6 月、7–9 月、10–12 月），本月、本季度、本年包含整个期间内已安排的未来事项。筛选同时作用于四个象限、未分类事项及数量统计；切到日历编辑后返回看板会保留所选范围。页面顶部显示实际起止日期。
+### Desk calendar
 
-记录保存在浏览器中。升级后请用原来的浏览器、用户配置及文件路径打开，以便继续读取旧记录。勿用无痕窗口作为日常记录入口。
+![English illustration of the monthly calendar and daily notes](docs/images/calendar-en.png)
 
-重新生成单文件：`npm run build:standalone`。
+### Eisenhower Matrix
 
-## 四象限的判断依据
+![English illustration of the priority board filtered to this month](docs/images/board-en.png)
 
-参考史蒂芬·柯维《高效能人士的七个习惯》习惯三“要事第一”（所提供 PDF 第 215–220 页，书内页码 216–221）。重要性取决于事项对个人目标的价值，紧急性取决于是否需要立即处理；两者独立判断，不按日期自动推断。
+## Quick start
 
-- 重要且紧急：关键目标相关的危机、迫近的关键交付，及时处理。
-- 重要不紧急：长期规划、关系维护、预防性工作，主动投入时间。
-- 不重要紧急：对目标贡献较少的催办与打断，辨别是否需要承担。
-- 不重要不紧急：无目的消磨时间、与目标无关的琐事，减少投入。
+1. Download [CalendarMemo-Standalone.html](CalendarMemo-Standalone.html) with GitHub’s **Download raw file** button, or download the repository ZIP.
+2. Double-click the HTML file in File Explorer. No account or server is required.
+3. Select a date, write a note, optionally set a time, choose a priority, and save. Double-click a date to focus the note field. Click the month heading to jump to another month or year.
 
-这些是应用内对原书观点的概括，具体事项仍由用户按自己的目标选择标签。看板展示所选日期范围的事项，象限内按日期与时间排列。
+Notes are saved in the browser. After an upgrade, open the file from the same path and browser profile to keep access to your notes. Private browsing and clearing browser storage can remove saved notes.
 
-## 本地运行
+## Priority board
+
+The four groups follow Habit 3, “Put First Things First,” from Stephen R. Covey’s *The 7 Habits of Highly Effective People*. You choose each note’s priority:
+
+- **Important and urgent:** address a critical issue or an imminent deadline.
+- **Important, not urgent:** make time for planning, relationships, and prevention.
+- **Urgent, not important:** decide whether a time-sensitive interruption needs your attention.
+- **Neither important nor urgent:** spend less time on low-value activities.
+
+Filter by **Today**, **This month**, **This quarter**, or **This year**. Ranges use your computer’s local date and calendar quarters. Month, quarter, and year include scheduled future dates in that period. Click a note to edit it in the calendar. Older notes without a priority appear under **Uncategorized**.
+
+## Development
 
 ```powershell
-npm install
-npm run tauri dev
-```
-
-仅在浏览器中预览界面：
-
-```powershell
+npm ci
 npm run dev
+npm run build:standalone
 ```
 
-浏览器预览会使用 `localStorage` 保存测试数据；Windows 桌面版本使用应用数据目录中的 SQLite 数据库。
-
-## 构建 Windows 安装包
-
-```powershell
-npm run tauri build
-```
-
-安装包会生成在 `src-tauri/target/release/bundle/nsis/`。
+The browser preview uses browser storage; the Tauri desktop app uses SQLite in its app data directory. After installing the Windows [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/), run `npm run tauri dev` for desktop development or `npm run tauri build` to build a Windows installer. The NSIS output goes to `src-tauri/target/release/bundle/nsis/`.
